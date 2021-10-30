@@ -1,8 +1,27 @@
+const fs = require('fs');
+const path = require('path');
 
+const pathInput = `${__dirname}/styles`;
+const pathOutput = `${__dirname}/project-dist/bundle.css`;
 
+const buildCss = (pathInput, pathOutput) => {
+  const writeStream = fs.createWriteStream(pathOutput);
 
+  fs.readdir(pathInput, {withFileTypes: true}, (err, data) => {
+    if (err) throw err;
+  
+    for (const file of data) {
+      const pathToFile = `${pathInput}/${file.name}`;
+  
+      fs.readFile(pathToFile, (err, data) => {
+        if (err) throw err;
+        if (path.extname(pathToFile)  === '.css') {
+          writeStream.write(data.toString());
+        };
+      });
+    }
+  
+  }); 
+} 
 
-// readFile('/etc/passwd', (err, data) => {
-//   if (err) throw err;
-//   console.log(data);
-// });
+buildCss(pathInput, pathOutput);
