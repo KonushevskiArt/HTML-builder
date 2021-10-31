@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const pathInputCss = `${__dirname}/styles`;
-const pathOutputCss = `${__dirname}/project-dist/bundle.css`;
+const pathOutputCss = `${__dirname}/project-dist/style.css`;
 
 const pathCopyAssets = `${__dirname}/project-dist/assets`;
 const pathAssets = `${__dirname}/assets`;
@@ -51,6 +51,7 @@ const copyDir = (pathDir, pathCopyDir) => {
 }
 
 const buildHTML = async (pathHTML, pathDistHTML, pathComponents) => {
+  const writeStream = fs.createWriteStream(pathDistHTML);
 
   // read components
   fs.readdir(pathComponents, {withFileTypes: true}, (err, data) => {
@@ -61,7 +62,7 @@ const buildHTML = async (pathHTML, pathDistHTML, pathComponents) => {
     for (const file of data) {
       const pathToFile = `${pathComponents}/${file.name}`;
 
-      arrPromises.push(new Promise((resolve, reject) => {
+      arrPromises.push(new Promise((resolve) => {
         if (file.isFile() && path.extname(pathToFile)  === '.html') {
           fs.readFile(pathToFile, (err, data) => {
             if (err) throw err;
@@ -83,6 +84,7 @@ const buildHTML = async (pathHTML, pathDistHTML, pathComponents) => {
           cash = cash.replace(reg, mapComponents[el.replace(/[\{\}]/g, '')])
         })
         console.log(cash)
+        writeStream.write(cash.toString());
         //// next step
       });
     })
