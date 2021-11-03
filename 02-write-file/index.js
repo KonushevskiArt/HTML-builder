@@ -1,3 +1,4 @@
+
 const fs = require('fs');
 const readline = require('readline');
 const process = require('process');
@@ -17,6 +18,5 @@ rl.on('line', (input) => {
 });
 
 rl.on('close', () => {
-  console.log('close interface!!');
+  console.log('\nclose interface!');
 });
-

@@ -1,3 +1,4 @@
+
 const path = require('path');
 const fs = require('fs');
 
@@ -10,7 +11,7 @@ try {
         fs.stat(`${pathDir}/${file.name}`, function(err, stats) {
           const name = file.name.replace(/\..+$/, '');
           const ext = path.extname(`${pathDir}/${file.name}`).replace(/^\./, '');
-          console.log(`name: ${name}, ext: ${ext}, size: ${stats.size}kb`);
+          console.log(`${name} - ${ext} - ${stats.size / 1000}kb`);
         });
       }
     }

@@ -17,11 +17,13 @@ const buildCss = (pathInput, pathOutput) => {
         if (err) throw err;
         if (path.extname(pathToFile)  === '.css') {
           writeStream.write(data.toString());
-        };
+        }
       });
     }
   
   }); 
-} 
+}; 
 
 buildCss(pathInput, pathOutput);
+
+

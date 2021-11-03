@@ -24,31 +24,44 @@ const buildCss = (pathInput, pathOutput) => {
         if (err) throw err;
         if (path.extname(pathToFile)  === '.css') {
           writeStream.write(data.toString());
-        };
+        }
       });
     }
   }); 
-} 
+}; 
 
-const copyDir = (pathDir, pathCopyDir) => {
-  fs.mkdir(pathCopyDir, { recursive: true }, (err) => {
-    if (err) throw err;
-
-    fs.readdir(pathDir, {withFileTypes: true}, (err, data) => {
+const refreshDir = (pathDir, pathCopyDir) => {
+  
+  const copyDir = (pathDir, pathCopyDir) => {
+    fs.mkdir(pathCopyDir, { recursive: true }, (err) => {
       if (err) throw err;
-
-      for (const file of data) {
-        if (file.isDirectory()) {   
-          copyDir(`${pathDir}/${file.name}`, `${pathCopyDir}/${file.name}`);
-        } else {
-          fs.copyFile(`${pathDir}/${file.name}`, `${pathCopyDir}/${file.name}`, (err) => {
-            if (err) throw err;
-          });
+  
+      fs.readdir(pathDir, {withFileTypes: true}, (err, data) => {
+        if (err) throw err;
+        for (const elem of data) {
+          if (elem.isFile()) {
+            fs.copyFile(`${pathDir}/${elem.name}`, `${pathCopyDir}/${elem.name}`,  (err) => {
+              if (err) throw err;
+            });
+          } else {
+            refreshDir(`${pathDir}/${elem.name}`, `${pathCopyDir}/${elem.name}`);
+          }
         }
-      }
+      });
     });
+  };
+  
+  fs.stat(pathCopyDir, (err) => {
+    if (err && err.code === 'ENOENT') {
+      copyDir(pathDir, pathCopyDir);
+    }
+    else {
+      fs.rmdir(pathCopyDir, { recursive: true }, () => {
+        copyDir(pathDir, pathCopyDir);
+      });
+    }
   });
-}
+};
 
 const buildHTML = async (pathHTML, pathDistHTML, pathComponents) => {
   const writeStream = fs.createWriteStream(pathDistHTML);
@@ -70,28 +83,31 @@ const buildHTML = async (pathHTML, pathDistHTML, pathComponents) => {
             resolve();
           });
         }
-      }))
+      }));
     }
 
     Promise.all(arrPromises)
-    .then(() => {
-      fs.readFile(pathHTML, (err, data) => {
-        let cash = data.toString();
-        if (err) throw err;
-        const res = cash.match(/\{\{.+\}\}/g);
-        res.forEach(el => {
-          reg = new RegExp(el, "g");
-          cash = cash.replace(reg, mapComponents[el.replace(/[\{\}]/g, '')])
-        })
-        console.log(cash)
-        writeStream.write(cash.toString());
-        //// next step
+      .then(() => {
+        fs.readFile(pathHTML, (err, data) => {
+          let cash = data.toString();
+          if (err) throw err;
+          const res = cash.match(/\{\{.+\}\}/g);
+          res.forEach(el => {
+            const reg = new RegExp(el, 'g');
+            cash = cash.replace(reg, mapComponents[el.replace(/[{}]/g, '')]);
+          });
+          writeStream.write(cash.toString());
+        });
       });
-    })
   }); 
-} 
+};
+
+fs.mkdir(`${__dirname}/project-dist`, { recursive: true }, (err) => {
+  if (err) throw err;
+
+  buildCss(pathInputCss, pathOutputCss);
+  refreshDir(pathAssets, pathCopyAssets);
+  buildHTML(pathHTML, pathDistHTML, pathComponents);
+});
 
 
-buildCss(pathInputCss, pathOutputCss);
-copyDir(pathAssets, pathCopyAssets);
-buildHTML(pathHTML, pathDistHTML, pathComponents);
