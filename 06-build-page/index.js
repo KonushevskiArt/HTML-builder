@@ -1,15 +1,18 @@
 const fs = require('fs');
 const path = require('path');
 
-const pathInputCss = `${__dirname}/styles`;
-const pathOutputCss = `${__dirname}/project-dist/style.css`;
+const pathDistDir = path.resolve(__dirname, 'project-dist');
 
-const pathCopyAssets = `${__dirname}/project-dist/assets`;
-const pathAssets = `${__dirname}/assets`;
+const pathInputCss = path.resolve(__dirname, 'styles');
+const pathOutputCss = path.resolve(__dirname, 'project-dist', 'style.css');
 
-const pathHTML = `${__dirname}/template.html`;
-const pathDistHTML = `${__dirname}/project-dist/index.html`; 
-const pathComponents = `${__dirname}/components`;
+const pathCopyAssets = path.resolve(__dirname, 'project-dist', 'assets');
+const pathAssets = path.resolve(__dirname, 'assets');
+
+const pathHTML = path.resolve(__dirname, 'template.html');
+const pathDistHTML = path.resolve(__dirname, 'project-dist', 'index.html');
+const pathComponents = path.resolve(__dirname, 'components');
+
 
 const buildCss = (pathInput, pathOutput) => {
   const writeStream = fs.createWriteStream(pathOutput);
@@ -102,7 +105,7 @@ const buildHTML = async (pathHTML, pathDistHTML, pathComponents) => {
   }); 
 };
 
-fs.mkdir(`${__dirname}/project-dist`, { recursive: true }, (err) => {
+fs.mkdir(pathDistDir, { recursive: true }, (err) => {
   if (err) throw err;
 
   buildCss(pathInputCss, pathOutputCss);
