@@ -13,12 +13,14 @@ const buildCss = (pathInput, pathOutput) => {
     for (const file of data) {
       const pathToFile = `${pathInput}/${file.name}`;
   
-      fs.readFile(pathToFile, (err, data) => {
-        if (err) throw err;
-        if (path.extname(pathToFile)  === '.css') {
-          writeStream.write(data.toString());
-        }
-      });
+      if (file.isFile()) {
+        fs.readFile(pathToFile, (err, data) => {
+          if (err) throw err;
+          if (path.extname(pathToFile)  === '.css') {
+            writeStream.write(data.toString());
+          }
+        });
+      }
     }
   
   }); 
