@@ -3,7 +3,7 @@ const fs = require('fs');
 const pathCopyDir = `${__dirname}/files-copy`;
 const pathDir = `${__dirname}/files`;
 
-const refreshDir = (pathCopyDir, pathDir) => {
+const refreshDir = (pathDir, pathCopyDir) => {
   
   const copyDir = (pathDir, pathCopyDir) => {
     fs.mkdir(pathCopyDir, { recursive: true }, (err) => {
@@ -11,11 +11,14 @@ const refreshDir = (pathCopyDir, pathDir) => {
   
       fs.readdir(pathDir, {withFileTypes: true}, (err, data) => {
         if (err) throw err;
-  
-        for (const file of data) {
-          fs.copyFile(`${pathDir}/${file.name}`, `${pathCopyDir}/${file.name}`, (err) => {
-            if (err) throw err;
-          });
+        for (const elem of data) {
+          if (elem.isFile()) {
+            fs.copyFile(`${pathDir}/${elem.name}`, `${pathCopyDir}/${elem.name}`,  (err) => {
+              if (err) throw err;
+            });
+          } else {
+            refreshDir(`${pathDir}/${elem.name}`, `${pathCopyDir}/${elem.name}`);
+          }
         }
       });
     });
@@ -33,4 +36,4 @@ const refreshDir = (pathCopyDir, pathDir) => {
   });
 };
 
-refreshDir(pathCopyDir, pathDir);
+refreshDir(pathDir, pathCopyDir);
