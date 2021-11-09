@@ -8,8 +8,7 @@ const writeStream = fs.createWriteStream(`${__dirname}/some-text.txt`);
 console.log('Please write text here');
 
 rl.on('line', (input) => {
-  const isExit = input.match(/exit/g);
-  if (isExit) {
+  if (input.trim() === 'exit') {
     writeStream.write(input.replace('exit', ''));
     rl.close();
   } else {
