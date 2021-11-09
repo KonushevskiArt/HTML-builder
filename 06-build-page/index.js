@@ -59,7 +59,7 @@ const refreshDir = (pathDir, pathCopyDir) => {
       copyDir(pathDir, pathCopyDir);
     }
     else {
-      fs.rmdir(pathCopyDir, { recursive: true }, () => {
+      fs.rm(pathCopyDir, { recursive: true }, () => {
         copyDir(pathDir, pathCopyDir);
       });
     }
