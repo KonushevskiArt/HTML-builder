@@ -9,7 +9,7 @@ try {
     for (const file of data) {
       if (file.isFile()) {
         fs.stat(`${pathDir}/${file.name}`, function(err, stats) {
-          const extention = path.extname(file.name);
+          const extention = path.extname(file.name).substring(1);
           const name = path.basename(file.name, path.extname(file.name));
           console.log(`${name} - ${extention} - ${stats.size / 1000}kb`);
         });
