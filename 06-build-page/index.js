@@ -21,7 +21,7 @@ const buildCss = (pathInput, pathOutput) => {
     if (err) throw err;
   
     for (const file of data) {
-      const pathToFile = `${pathInput}/${file.name}`;
+      const pathToFile = path.join(pathInput, file.name);
   
       fs.readFile(pathToFile, (err, data) => {
         if (err) throw err;
@@ -43,11 +43,11 @@ const refreshDir = (pathDir, pathCopyDir) => {
         if (err) throw err;
         for (const elem of data) {
           if (elem.isFile()) {
-            fs.copyFile(`${pathDir}/${elem.name}`, `${pathCopyDir}/${elem.name}`,  (err) => {
+            fs.copyFile(path.join(pathDir, elem.name), path.join(pathCopyDir, elem.name),  (err) => {
               if (err) throw err;
             });
           } else {
-            refreshDir(`${pathDir}/${elem.name}`, `${pathCopyDir}/${elem.name}`);
+            refreshDir(path.join(pathDir, elem.name), path.join(pathCopyDir, elem.name));
           }
         }
       });
@@ -76,7 +76,7 @@ const buildHTML = async (pathHTML, pathDistHTML, pathComponents) => {
     const mapComponents = {}; 
   
     for (const file of data) {
-      const pathToFile = `${pathComponents}/${file.name}`;
+      const pathToFile = path.resolve(pathComponents, file.name);
 
       arrPromises.push(new Promise((resolve) => {
         if (file.isFile() && path.extname(pathToFile)  === '.html') {

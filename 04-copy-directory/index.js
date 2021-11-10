@@ -1,7 +1,8 @@
 const fs = require('fs');
+const path = require('path');
 
-const pathCopyDir = `${__dirname}/files-copy`;
-const pathDir = `${__dirname}/files`;
+const pathCopyDir = path.join(__dirname, 'files-copy');
+const pathDir = path.join(__dirname, 'files');
 
 const refreshDir = (pathDir, pathCopyDir) => {
   
@@ -13,11 +14,11 @@ const refreshDir = (pathDir, pathCopyDir) => {
         if (err) throw err;
         for (const elem of data) {
           if (elem.isFile()) {
-            fs.copyFile(`${pathDir}/${elem.name}`, `${pathCopyDir}/${elem.name}`,  (err) => {
+            fs.copyFile(path.join(pathDir, elem.name), path.join(pathCopyDir, elem.name),  (err) => {
               if (err) throw err;
             });
           } else {
-            refreshDir(`${pathDir}/${elem.name}`, `${pathCopyDir}/${elem.name}`);
+            refreshDir(path.join(pathDir, elem.name), path.join(pathCopyDir, elem.name));
           }
         }
       });

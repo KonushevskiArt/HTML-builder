@@ -1,8 +1,9 @@
 const fs = require('fs');
 const path = require('path');
-
-const pathInput = `${__dirname}/styles`;
-const pathOutput = `${__dirname}/project-dist/bundle.css`;
+const pathInput = path.join(__dirname, 'styles');
+const pathOutput = path.join(__dirname, 'project-dist', 'bundle.css');
+// const pathInput = `${__dirname}/styles`;
+// const pathOutput = `${__dirname}/project-dist/bundle.css`;
 
 const buildCss = (pathInput, pathOutput) => {
   const writeStream = fs.createWriteStream(pathOutput);
@@ -11,7 +12,7 @@ const buildCss = (pathInput, pathOutput) => {
     if (err) throw err;
   
     for (const file of data) {
-      const pathToFile = `${pathInput}/${file.name}`;
+      const pathToFile = path.join(pathInput, file.name);
   
       if (file.isFile()) {
         fs.readFile(pathToFile, (err, data) => {

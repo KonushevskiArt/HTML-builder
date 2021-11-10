@@ -1,9 +1,10 @@
-
+const path = require('path');
 const fs = require('fs');
 const readline = require('readline');
 const process = require('process');
 const rl = readline.createInterface({input: process.stdin, output: process.stdout});
-const writeStream = fs.createWriteStream(`${__dirname}/some-text.txt`);
+const fileName = path.join(__dirname, 'text.txt');
+const writeStream = fs.createWriteStream(fileName);
 
 console.log('Please write text here');
 
