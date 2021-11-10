@@ -94,7 +94,7 @@ const buildHTML = async (pathHTML, pathDistHTML, pathComponents) => {
         fs.readFile(pathHTML, (err, data) => {
           let cash = data.toString();
           if (err) throw err;
-          const res = cash.match(/\{\{.+\}\}/g);
+          const res = cash.match(/\{\{.+?\}\}/g);
           res.forEach(el => {
             const reg = new RegExp(el, 'g');
             cash = cash.replace(reg, mapComponents[el.replace(/[{}]/g, '')]);
